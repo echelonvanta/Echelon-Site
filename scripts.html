@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Pizza Sipariş</title>
+    <style>
+        /* Genel stiller */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        /* Input alanı stilleri */
+        .input-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .modern-input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e6e6e6;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .modern-input:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+        
+        .input-label {
+            position: absolute;
+            left: 20px;
+            top: 18px;
+            color: #999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            background: white;
+            padding: 0 5px;
+        }
+        
+        .modern-input:focus + .input-label,
+        .modern-input:not(:placeholder-shown) + .input-label {
+            top: -10px;
+            font-size: 12px;
+            color: #ff6b6b;
+        }
+        
+        /* Buton stilleri */
+        .submit-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .submit-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Sonuç mesajı */
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        .success {
+            display: block;
+            color: #28a745;
+            border: 1px solid #d4edda;
+            background: #d4edda;
+        }
+        
+        /* Animasyon */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease;
+        }
+        
+        /* Klavye kısayolu bilgisi */
+        .key-hint {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pizza Sipariş</h1>
+        <p>Hızlı pizza siparişi için aşağıya "pizza" yazın ve Enter tuşuna basın</p>
+        
+        <div class="input-container">
+            <input type="text" class="modern-input" id="pizzaInput" placeholder=" " autocomplete="off">
+            <label class="input-label">Ne sipariş vermek istersiniz?</label>
+        </div>
+        
+        <button class="submit-btn" onclick="checkInput()">Sipariş Ver</button>
+        
+        <div class="key-hint">Klavye kısayolu: "pizza" yazıp Enter'a basın</div>
+        
+        <div id="resultMessage" class="result"></div>
+    </div>
+
+    <script>
+        // Input alanına odaklan
+        document.getElementById('pizzaInput').focus();
+        
+        // Klavye dinleme
+        document.addEventListener('keydown', function(event) {
+            // Enter tuşuna basıldığında
+            if (event.key === 'Enter') {
+                checkInput();
+            }
+            
+            // Kısayol tuşu: P tuşuna basıldığında inputa odaklan
+            if (event.key === 'p' || event.key === 'P') {
+                // Eğeklikle input içinde değilsek
+                if (event.target.tagName !== 'INPUT') {
+                    document.getElementById('pizzaInput').focus();
+                    event.preventDefault(); // Sayfada P harfi yazılmasını engelle
+                }
+            }
+        });
+        
+        // Input kontrolü
+        function checkInput() {
+            const input = document.getElementById('pizzaInput');
+            const result = document.getElementById('resultMessage');
+            
+            if (input.value.toLowerCase() === 'pizza') {
+                result.textContent = 'Tebrikler! Pizza siparişiniz alındı. 🍕';
+                result.className = 'result success';
+                
+                // Inputu temizle
+                input.value = '';
+                
+                // Butona pulse animasyonu uygula
+                const button = document.querySelector('.submit-btn');
+                button.classList.add('pulse');
+                setTimeout(() => {
+                    button.classList.remove('pulse');
+                }, 500);
+            } else {
+                result.textContent = 'Üzgünüz, sadece pizza siparişi verebilirsiniz.';
+                result.className = 'result';
+            }
+        }
+    </script>
+</body>
+</html>
